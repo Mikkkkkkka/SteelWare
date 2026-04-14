@@ -7,7 +7,7 @@ public interface ISteelRollPersistenceService
 {
     public Task<SteelRoll> Add(AddSteelRollRequest request);
 
-    public Task<SteelRoll> SoftDelete(DeleteSteelRollRequest request);
+    public Task<SteelRoll> Delete(DeleteSteelRollRequest request);
 
     public IAsyncEnumerable<SteelRoll> GetFiltered(SteelRollFilter filter);
 }
