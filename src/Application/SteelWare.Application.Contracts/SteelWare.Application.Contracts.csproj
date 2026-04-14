@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Domain\SteelWare.Domain\SteelWare.Domain.csproj"/>
+        <ProjectReference Include="..\SteelWare.Application.Models\SteelWare.Application.Models.csproj" />
+    </ItemGroup>
+
+</Project>
