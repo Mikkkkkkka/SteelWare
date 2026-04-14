@@ -1,0 +1,6 @@
+@SteelWare_HostAddress = http://localhost:5033
+
+GET {{SteelWare_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### 

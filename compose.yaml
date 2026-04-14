@@ -1,0 +1,7 @@
+﻿services:
+  steelware:
+    image: steelware
+    build:
+      context: .
+      dockerfile: SteelWare/Dockerfile
+
