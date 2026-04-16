@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Domain\SteelWare.Domain\SteelWare.Domain.csproj"/>
-        <ProjectReference Include="..\SteelWare.Application.Contracts\SteelWare.Application.Contracts.csproj"/>
         <ProjectReference Include="..\SteelWare.Application.Models\SteelWare.Application.Models.csproj"/>
     </ItemGroup>
 
