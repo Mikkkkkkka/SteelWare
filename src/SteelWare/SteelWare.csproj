@@ -9,12 +9,19 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.14"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
         <Content Include="..\..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Application\SteelWare.Application\SteelWare.Application.csproj" />
+        <ProjectReference Include="..\Infrastructure\SteelWare.Infrastructure.DataAccess\SteelWare.Infrastructure.DataAccess.csproj" />
+        <ProjectReference Include="..\Presentation\SteelWare.Presentation.Http\SteelWare.Presentation.Http.csproj" />
     </ItemGroup>
 
 </Project>
