@@ -34,7 +34,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var stats = await AggregateRollsInPeriod(
             period,
             (Count: 0, Total: 0F),
-            roll => roll.DeletedAt is null,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => (current.Count + 1, current.Total + roll.Length));
 
         return stats.Total / stats.Count;
@@ -45,7 +45,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var stats = await AggregateRollsInPeriod(
             period,
             (Count: 0, Total: 0F),
-            roll => roll.DeletedAt is null,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => (current.Count + 1, current.Total + roll.Weight));
 
         return stats.Total / stats.Count;
@@ -56,7 +56,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var maxLength = await AggregateRollsInPeriod(
             period,
             float.MinValue,
-            roll => roll.DeletedAt is not null && roll.DeletedAt > period.To,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => Math.Max(current, roll.Length));
 
         return maxLength;
@@ -67,7 +67,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var minLength = await AggregateRollsInPeriod(
             period,
             float.MaxValue,
-            roll => roll.DeletedAt is not null && roll.DeletedAt > period.To,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => Math.Min(current, roll.Length));
 
         return minLength;
@@ -78,7 +78,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var maxWeight = await AggregateRollsInPeriod(
             period,
             float.MinValue,
-            roll => roll.DeletedAt is not null && roll.DeletedAt > period.To,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => Math.Max(current, roll.Weight));
 
         return maxWeight;
@@ -89,7 +89,7 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         var minWeight = await AggregateRollsInPeriod(
             period,
             float.MaxValue,
-            roll => roll.DeletedAt is not null && roll.DeletedAt > period.To,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => Math.Min(current, roll.Weight));
 
         return minWeight;
@@ -100,8 +100,13 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         return AggregateRollsInPeriod(
             period,
             0F,
-            roll => roll.DeletedAt is null,
+            roll => WasAvailableAtPeriodEnd(roll, period),
             (current, roll) => current + roll.Weight);
+    }
+
+    private static bool WasAvailableAtPeriodEnd(SteelRoll roll, TimePeriod period)
+    {
+        return roll.DeletedAt is null || roll.DeletedAt > period.To;
     }
 
     private async Task<TResult> AggregateRollsInPeriod<TResult>(
