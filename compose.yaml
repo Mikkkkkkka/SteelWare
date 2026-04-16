@@ -1,7 +1,34 @@
-﻿services:
+services:
   steelware:
-    image: steelware
+    image: steelware-api
     build:
       context: .
-      dockerfile: SteelWare/Dockerfile
+      dockerfile: src/SteelWare/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__SteelWare: Host=postgres;Port=5432;Database=steelware;Username=postgres;Password=postgres
+    ports:
+      - "8080:8080"
 
+  postgres:
+    image: postgres:17-alpine
+    container_name: steelware-postgres
+    environment:
+      POSTGRES_DB: steelware
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - steelware-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d steelware" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  steelware-postgres-data:
