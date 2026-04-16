@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.14"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\SteelWare.Application.Contracts\SteelWare.Application.Contracts.csproj"/>
+        <ProjectReference Include="..\..\Application\SteelWare.Application.Models\SteelWare.Application.Models.csproj"/>
+        <ProjectReference Include="..\..\Domain\SteelWare.Domain\SteelWare.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>
