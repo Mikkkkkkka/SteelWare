@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await app.Services.InitializeSteelWareDataAccessAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

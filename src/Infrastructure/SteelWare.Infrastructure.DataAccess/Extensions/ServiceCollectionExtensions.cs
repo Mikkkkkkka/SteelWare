@@ -29,4 +29,14 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    public static async Task InitializeSteelWareDataAccessAsync(
+        this IServiceProvider serviceProvider,
+        CancellationToken cancellationToken = default)
+    {
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<SteelWareDbContext>();
+
+        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+    }
 }
