@@ -1,11 +1,12 @@
 <Solution>
     <Folder Name="/Solution Items/">
-        <File Path="compose.yaml"/>
+        <File Path="compose.yaml" />
     </Folder>
-    <Project Path="src/Application/SteelWare.Application.Abstractions/SteelWare.Application.Abstractions.csproj"/>
-    <Project Path="src/Application/SteelWare.Application.Contracts/SteelWare.Application.Contracts.csproj"/>
-    <Project Path="src/Application/SteelWare.Application.Models/SteelWare.Application.Models.csproj"/>
-    <Project Path="src/Application/SteelWare.Application/SteelWare.Application.csproj"/>
-    <Project Path="src/Domain/SteelWare.Domain/SteelWare.Domain.csproj"/>
-    <Project Path="src/SteelWare/SteelWare.csproj"/>
+    <Project Path="src/Application/SteelWare.Application.Abstractions/SteelWare.Application.Abstractions.csproj" />
+    <Project Path="src/Application/SteelWare.Application.Contracts/SteelWare.Application.Contracts.csproj" />
+    <Project Path="src/Application/SteelWare.Application.Models/SteelWare.Application.Models.csproj" />
+    <Project Path="src/Application/SteelWare.Application/SteelWare.Application.csproj" />
+    <Project Path="src/Domain/SteelWare.Domain/SteelWare.Domain.csproj" />
+    <Project Path="src/Infrastructure/SteelWare.Infrastructure.DataAccess/SteelWare.Infrastructure.DataAccess.csproj" />
+    <Project Path="src/SteelWare/SteelWare.csproj" />
 </Solution>
