@@ -84,9 +84,58 @@ public sealed class StorageStatisticsController(IStorageStatisticsService servic
         return Execute(query, service.TotalWeight, cancellationToken);
     }
 
+    [HttpGet("min-roll-count-day")]
+    [ProducesResponseType<DateTime>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<DateTime>> DayWithMinRollCount(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.GetDayWithMinRollCount, cancellationToken);
+    }
+
+    [HttpGet("max-roll-count-day")]
+    [ProducesResponseType<DateTime>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<DateTime>> DayWithMaxRollCount(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.GetDayWithMaxRollCount, cancellationToken);
+    }
+
+    [HttpGet("min-total-weight-day")]
+    [ProducesResponseType<DateTime>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<DateTime>> DayWithMinTotalWeight(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.GetDayWithMinTotalWeight, cancellationToken);
+    }
+
+    [HttpGet("max-total-weight-day")]
+    [ProducesResponseType<DateTime>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<DateTime>> DayWithMaxTotalWeight(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.GetDayWithMaxTotalWeight, cancellationToken);
+    }
+
     private async Task<ActionResult<float>> Execute(
         TimePeriodQuery query,
         Func<TimePeriod, Task<float>> action,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Ok(await action(query.ToTimePeriod()));
+    }
+
+    private async Task<ActionResult<DateTime>> Execute(
+        TimePeriodQuery query,
+        Func<TimePeriod, Task<DateTime>> action,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

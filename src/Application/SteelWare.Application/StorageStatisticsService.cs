@@ -104,9 +104,83 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
             (current, roll) => current + roll.Weight);
     }
 
+    public async Task<DateTime> GetDayWithMinRollCount(TimePeriod period)
+    {
+        var dailyStats = await BuildDailyStats(period);
+        return dailyStats.MinBy(static entry => entry.RollCount)!.Day;
+    }
+
+    public async Task<DateTime> GetDayWithMaxRollCount(TimePeriod period)
+    {
+        var dailyStats = await BuildDailyStats(period);
+        return dailyStats.MaxBy(static entry => entry.RollCount)!.Day;
+    }
+
+    public async Task<DateTime> GetDayWithMinTotalWeight(TimePeriod period)
+    {
+        var dailyStats = await BuildDailyStats(period);
+        return dailyStats.MinBy(static entry => entry.TotalWeight)!.Day;
+    }
+
+    public async Task<DateTime> GetDayWithMaxTotalWeight(TimePeriod period)
+    {
+        var dailyStats = await BuildDailyStats(period);
+        return dailyStats.MaxBy(static entry => entry.TotalWeight)!.Day;
+    }
+
     private static bool WasAvailableAtPeriodEnd(SteelRoll roll, TimePeriod period)
     {
         return roll.DeletedAt is null || roll.DeletedAt > period.To;
+    }
+
+    private async Task<IReadOnlyList<DailyStat>> BuildDailyStats(TimePeriod period)
+    {
+        var firstDay = period.From.Date;
+        var lastDay = period.To.Date;
+
+        if (firstDay > lastDay)
+            throw new ArgumentException("The period must contain at least one day.", nameof(period));
+
+        var statsByDay = new List<DailyStat>();
+
+        for (var day = firstDay; day <= lastDay; day = day.AddDays(1))
+            statsByDay.Add(new DailyStat(day));
+
+        SteelRollFilter filter = new()
+        {
+            AddedTo = lastDay.AddDays(1).AddTicks(-1)
+        };
+
+        await foreach (var roll in repository.GetFiltered(filter))
+        {
+            for (var index = 0; index < statsByDay.Count; index++)
+            {
+                var day = statsByDay[index].Day;
+                if (!WasAvailableAtDayEnd(roll, day))
+                    continue;
+
+                statsByDay[index] = statsByDay[index] with
+                {
+                    RollCount = statsByDay[index].RollCount + 1,
+                    TotalWeight = statsByDay[index].TotalWeight + roll.Weight
+                };
+            }
+        }
+
+        return statsByDay;
+    }
+
+    private static bool WasAvailableAtDayEnd(SteelRoll roll, DateTime day)
+    {
+        var dayEndExclusive = day.Date.AddDays(1);
+        return roll.AddedAt < dayEndExclusive && (roll.DeletedAt is null || roll.DeletedAt >= dayEndExclusive);
+    }
+
+    private sealed record DailyStat(DateTime Day)
+    {
+        public int RollCount { get; init; }
+
+        public float TotalWeight { get; init; }
     }
 
     private async Task<TResult> AggregateRollsInPeriod<TResult>(
