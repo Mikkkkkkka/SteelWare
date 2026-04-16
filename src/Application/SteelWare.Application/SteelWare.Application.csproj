@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SteelWare.Application.Abstractions\SteelWare.Application.Abstractions.csproj" />
-      <ProjectReference Include="..\SteelWare.Application.Contracts\SteelWare.Application.Contracts.csproj" />
+        <ProjectReference Include="..\SteelWare.Application.Abstractions\SteelWare.Application.Abstractions.csproj"/>
+        <ProjectReference Include="..\SteelWare.Application.Contracts\SteelWare.Application.Contracts.csproj"/>
     </ItemGroup>
 
 </Project>

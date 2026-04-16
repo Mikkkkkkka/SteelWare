@@ -8,11 +8,7 @@ public class SteelRoll
 
     public float Weight { get; set; }
 
-    public DateOnly AddedFrom { get; set; }
+    public DateTime AddedAt { get; set; }
 
-    public DateOnly AddedTo { get; set; }
-
-    public DateOnly DeletedAt { get; set; }
-
-    public DateOnly DeletedTo { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

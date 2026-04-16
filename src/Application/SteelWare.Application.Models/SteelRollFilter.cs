@@ -1,6 +1,6 @@
 ﻿namespace SteelWare.Application.Models;
 
-public record SteelRollFilter(
+public record struct SteelRollFilter(
     int? IdsFrom,
     int? IdsTo,
     float? WeightsFrom,
