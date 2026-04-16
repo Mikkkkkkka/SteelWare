@@ -33,7 +33,7 @@ public class SteelRollRepository(SteelWareDbContext dbContext) : ISteelRollRepos
 
     public IAsyncEnumerable<SteelRoll> GetFiltered(SteelRollFilter filter)
     {
-        IQueryable<SteelRoll> query = dbContext.SteelRolls.AsNoTracking();
+        var query = dbContext.SteelRolls.AsNoTracking();
 
         if (filter.IdsFrom is not null)
             query = query.Where(x => x.Id >= filter.IdsFrom.Value);
