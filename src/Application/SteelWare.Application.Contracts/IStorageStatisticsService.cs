@@ -22,6 +22,10 @@ public interface IStorageStatisticsService
 
     public Task<float> TotalWeight(TimePeriod period);
 
+    public Task<TimeSpan> MinStorageDuration(TimePeriod period);
+
+    public Task<TimeSpan> MaxStorageDuration(TimePeriod period);
+
     public Task<DateTime> GetDayWithMinRollCount(TimePeriod period);
 
     public Task<DateTime> GetDayWithMaxRollCount(TimePeriod period);

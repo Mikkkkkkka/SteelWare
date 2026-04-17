@@ -104,6 +104,22 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
             (current, roll) => current + roll.Weight);
     }
 
+    public Task<TimeSpan> MinStorageDuration(TimePeriod period)
+    {
+        return AggregateDeletedRollsInPeriod(
+            period,
+            TimeSpan.MaxValue,
+            (current, roll) => Min(current, GetStorageDuration(roll)));
+    }
+
+    public Task<TimeSpan> MaxStorageDuration(TimePeriod period)
+    {
+        return AggregateDeletedRollsInPeriod(
+            period,
+            TimeSpan.Zero,
+            (current, roll) => Max(current, GetStorageDuration(roll)));
+    }
+
     public async Task<DateTime> GetDayWithMinRollCount(TimePeriod period)
     {
         var dailyStats = await BuildDailyStats(period);
@@ -131,6 +147,21 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
     private static bool WasAvailableAtPeriodEnd(SteelRoll roll, TimePeriod period)
     {
         return roll.DeletedAt is null || roll.DeletedAt > period.To;
+    }
+
+    private static TimeSpan GetStorageDuration(SteelRoll roll)
+    {
+        return roll.DeletedAt!.Value - roll.AddedAt;
+    }
+
+    private static TimeSpan Min(TimeSpan left, TimeSpan right)
+    {
+        return left <= right ? left : right;
+    }
+
+    private static TimeSpan Max(TimeSpan left, TimeSpan right)
+    {
+        return left >= right ? left : right;
     }
 
     private async Task<IReadOnlyList<DailyStat>> BuildDailyStats(TimePeriod period)
@@ -193,6 +224,25 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
             if (!shouldInclude(roll)) continue;
             result = aggregate(result, roll);
         }
+
+        return result;
+    }
+
+    private async Task<TResult> AggregateDeletedRollsInPeriod<TResult>(
+        TimePeriod period,
+        TResult seed,
+        Func<TResult, SteelRoll, TResult> aggregate)
+    {
+        var result = seed;
+
+        SteelRollFilter filter = new()
+        {
+            DeletedFrom = period.From,
+            DeletedTo = period.To
+        };
+
+        await foreach (var roll in repository.GetFiltered(filter))
+            result = aggregate(result, roll);
 
         return result;
     }
