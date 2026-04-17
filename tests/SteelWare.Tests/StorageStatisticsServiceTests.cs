@@ -73,6 +73,37 @@ public sealed class StorageStatisticsServiceTests
     }
 
     [Fact]
+    public async Task StorageDuration_ReturnsMinAndMaxForRollsDeletedWithinPeriod()
+    {
+        var period = new TimePeriod(new DateTime(2026, 4, 1), new DateTime(2026, 4, 30));
+        var service = CreateService(
+            CreateRoll(1, 10, 100, new DateTime(2026, 4, 1), new DateTime(2026, 4, 4)),
+            CreateRoll(2, 10, 100, new DateTime(2026, 4, 10), new DateTime(2026, 4, 12)),
+            CreateRoll(3, 10, 100, new DateTime(2026, 3, 1), new DateTime(2026, 3, 20)),
+            CreateRoll(4, 10, 100, new DateTime(2026, 4, 20), null));
+
+        var minDuration = await service.MinStorageDuration(period);
+        var maxDuration = await service.MaxStorageDuration(period);
+
+        Assert.Equal(TimeSpan.FromDays(2), minDuration);
+        Assert.Equal(TimeSpan.FromDays(3), maxDuration);
+    }
+
+    [Fact]
+    public async Task StorageDuration_RequestsRepositoryDataByDeletedPeriod()
+    {
+        var period = new TimePeriod(new DateTime(2026, 4, 1), new DateTime(2026, 4, 30));
+        var repository =
+            new FakeSteelRollRepository([CreateRoll(1, 10, 100, new DateTime(2026, 4, 5), new DateTime(2026, 4, 6))]);
+        var service = new StorageStatisticsService(repository);
+
+        await service.MinStorageDuration(period);
+
+        Assert.Equal(period.From, repository.LastFilter?.DeletedFrom);
+        Assert.Equal(period.To, repository.LastFilter?.DeletedTo);
+    }
+
+    [Fact]
     public async Task DailyExtremes_ReturnDaysForMinAndMaxCountAndWeight()
     {
         var period = new TimePeriod(new DateTime(2026, 4, 1), new DateTime(2026, 4, 3));
