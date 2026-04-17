@@ -27,6 +27,8 @@ public sealed class ValidationContractsTests
         {
             IdsFrom = 10,
             IdsTo = 1,
+            LengthsFrom = 20,
+            LengthsTo = 10,
             WeightsFrom = 100,
             WeightsTo = 10,
             AddedFrom = new DateTime(2026, 4, 10),
@@ -37,7 +39,7 @@ public sealed class ValidationContractsTests
 
         var results = Validate(query);
 
-        Assert.Equal(4, results.Count);
+        Assert.Equal(5, results.Count);
     }
 
     [Fact]

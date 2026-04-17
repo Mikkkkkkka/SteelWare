@@ -58,9 +58,27 @@ public sealed class SteelRollsControllerTests
         Assert.Equal("missing", details.Detail);
     }
 
+    [Fact]
+    public async Task GetFiltered_PassesLengthRangeToService()
+    {
+        var service = new FakeSteelRollPersistenceService();
+        var controller = new SteelRollsController(service);
+
+        await controller.GetFiltered(new GetSteelRollsQuery
+        {
+            LengthsFrom = 10,
+            LengthsTo = 20
+        }, CancellationToken.None);
+
+        Assert.Equal(10, service.LastFilter?.LengthsFrom);
+        Assert.Equal(20, service.LastFilter?.LengthsTo);
+    }
+
     private sealed class FakeSteelRollPersistenceService : ISteelRollPersistenceService
     {
         public AddSteelRollRequest? LastAddRequest { get; private set; }
+
+        public SteelRollFilter? LastFilter { get; private set; }
 
         public SteelRoll? AddedRoll { get; init; }
 
@@ -82,6 +100,7 @@ public sealed class SteelRollsControllerTests
 
         public IAsyncEnumerable<SteelRoll> GetFiltered(SteelRollFilter filter)
         {
+            LastFilter = filter;
             return Empty();
         }
 

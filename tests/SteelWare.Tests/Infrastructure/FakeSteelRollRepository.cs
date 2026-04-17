@@ -30,6 +30,10 @@ internal sealed class FakeSteelRollRepository(IEnumerable<SteelRoll> rolls) : IS
                 continue;
             if (filter.IdsTo is not null && roll.Id > filter.IdsTo.Value)
                 continue;
+            if (filter.LengthsFrom is not null && roll.Length < filter.LengthsFrom.Value)
+                continue;
+            if (filter.LengthsTo is not null && roll.Length > filter.LengthsTo.Value)
+                continue;
             if (filter.WeightsFrom is not null && roll.Weight < filter.WeightsFrom.Value)
                 continue;
             if (filter.WeightsTo is not null && roll.Weight > filter.WeightsTo.Value)
