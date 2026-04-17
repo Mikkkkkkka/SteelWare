@@ -84,6 +84,26 @@ public sealed class StorageStatisticsController(IStorageStatisticsService servic
         return Execute(query, service.TotalWeight, cancellationToken);
     }
 
+    [HttpGet("min-storage-duration")]
+    [ProducesResponseType<TimeSpan>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<TimeSpan>> MinStorageDuration(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.MinStorageDuration, cancellationToken);
+    }
+
+    [HttpGet("max-storage-duration")]
+    [ProducesResponseType<TimeSpan>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public Task<ActionResult<TimeSpan>> MaxStorageDuration(
+        [FromQuery] TimePeriodQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Execute(query, service.MaxStorageDuration, cancellationToken);
+    }
+
     [HttpGet("min-roll-count-day")]
     [ProducesResponseType<DateTime>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -136,6 +156,15 @@ public sealed class StorageStatisticsController(IStorageStatisticsService servic
     private async Task<ActionResult<DateTime>> Execute(
         TimePeriodQuery query,
         Func<TimePeriod, Task<DateTime>> action,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Ok(await action(query.ToTimePeriod()));
+    }
+
+    private async Task<ActionResult<TimeSpan>> Execute(
+        TimePeriodQuery query,
+        Func<TimePeriod, Task<TimeSpan>> action,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
