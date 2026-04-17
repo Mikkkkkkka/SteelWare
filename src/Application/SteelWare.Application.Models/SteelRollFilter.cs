@@ -3,6 +3,8 @@
 public record struct SteelRollFilter(
     int? IdsFrom,
     int? IdsTo,
+    float? LengthsFrom,
+    float? LengthsTo,
     float? WeightsFrom,
     float? WeightsTo,
     DateTime? AddedFrom,

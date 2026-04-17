@@ -152,7 +152,6 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         };
 
         await foreach (var roll in repository.GetFiltered(filter))
-        {
             for (var index = 0; index < statsByDay.Count; index++)
             {
                 var day = statsByDay[index].Day;
@@ -165,7 +164,6 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
                     TotalWeight = statsByDay[index].TotalWeight + roll.Weight
                 };
             }
-        }
 
         return statsByDay;
     }
@@ -174,13 +172,6 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
     {
         var dayEndExclusive = day.Date.AddDays(1);
         return roll.AddedAt < dayEndExclusive && (roll.DeletedAt is null || roll.DeletedAt >= dayEndExclusive);
-    }
-
-    private sealed record DailyStat(DateTime Day)
-    {
-        public int RollCount { get; init; }
-
-        public float TotalWeight { get; init; }
     }
 
     private async Task<TResult> AggregateRollsInPeriod<TResult>(
@@ -204,5 +195,12 @@ public class StorageStatisticsService(ISteelRollRepository repository) : IStorag
         }
 
         return result;
+    }
+
+    private sealed record DailyStat(DateTime Day)
+    {
+        public int RollCount { get; init; }
+
+        public float TotalWeight { get; init; }
     }
 }
