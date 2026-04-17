@@ -40,6 +40,11 @@ public class SteelRollRepository(SteelWareDbContext dbContext) : ISteelRollRepos
         if (filter.IdsTo is not null)
             query = query.Where(x => x.Id <= filter.IdsTo.Value);
 
+        if (filter.LengthsFrom is not null)
+            query = query.Where(x => x.Length >= filter.LengthsFrom.Value);
+        if (filter.LengthsTo is not null)
+            query = query.Where(x => x.Length <= filter.LengthsTo.Value);
+
         if (filter.WeightsFrom is not null)
             query = query.Where(x => x.Weight >= filter.WeightsFrom.Value);
         if (filter.WeightsTo is not null)
