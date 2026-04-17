@@ -9,6 +9,10 @@ public sealed record GetSteelRollsQuery : IValidatableObject
 
     public int? IdsTo { get; init; }
 
+    public float? LengthsFrom { get; init; }
+
+    public float? LengthsTo { get; init; }
+
     public float? WeightsFrom { get; init; }
 
     public float? WeightsTo { get; init; }
@@ -26,6 +30,10 @@ public sealed record GetSteelRollsQuery : IValidatableObject
         if (IdsFrom > IdsTo)
             yield return new ValidationResult("IdsFrom must be less than or equal to IdsTo.",
                 [nameof(IdsFrom), nameof(IdsTo)]);
+
+        if (LengthsFrom > LengthsTo)
+            yield return new ValidationResult("LengthsFrom must be less than or equal to LengthsTo.",
+                [nameof(LengthsFrom), nameof(LengthsTo)]);
 
         if (WeightsFrom > WeightsTo)
             yield return new ValidationResult("WeightsFrom must be less than or equal to WeightsTo.",
@@ -45,6 +53,8 @@ public sealed record GetSteelRollsQuery : IValidatableObject
         return new SteelRollFilter(
             IdsFrom,
             IdsTo,
+            LengthsFrom,
+            LengthsTo,
             WeightsFrom,
             WeightsTo,
             AddedFrom,
